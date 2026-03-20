@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Comisiones</title>
+    <link rel="stylesheet" href="./css/Comisiones.css" />
+    <script src="./JavaScript/Comisiones.js" defer></script>
+  </head>
+  <body>
+    <div class="contenedor-general">
+      <aside class="menu-lateral">
+        <div class="menu-superior">
+          <a href="./index.html" class="icono-casa" title="Volver al inicio"
+            >⌂</a
+          >
+        </div>
+
+        <nav class="botones-menu">
+          <a href="./Comisiones.html" class="boton-menu activo">COMISIONES</a>
+          <a href="#" class="boton-menu">EXPULSIONES</a>
+          <a href="#" class="boton-menu">EXTRADICCIONES</a>
+        </nav>
+      </aside>
+
+      <main class="contenido-principal">
+        <div id="contenedor-funcionarios"></div>
+
+        <div class="contenedor-acciones-funcionarios">
+          <button
+            type="button"
+            id="btn-agregar-funcionario"
+            class="boton-secundario"
+          >
+            + AGREGAR OTRO FUNCIONARIO
+          </button>
+
+          <div class="bloque-eliminar-funcionario">
+            <select
+              id="selector-funcionario-eliminar"
+              class="selector-eliminar-funcionario"
+            >
+              <option value="">Seleccionar funcionario</option>
+            </select>
+
+            <button
+              type="button"
+              id="btn-eliminar-funcionario"
+              class="boton-secundario"
+            >
+              - ELIMINAR FUNCIONARIO
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <div class="contenedor-boton-final">
+      <button type="button" id="btn-generar-word" class="boton-principal">
+        ACEPTAR Y GENERAR WORD
+      </button>
+    </div>
+
+    <template id="template-funcionario">
+      <section class="bloque-funcionario">
+        <div class="encabezado-formulario">
+          Datos del funcionario <span class="numero-funcionario"></span>
+        </div>
+
+        <div class="fila fila-tres fila-superior">
+          <div class="campo">
+            <label>Jerarquía</label>
+            <select class="campo-jerarquia">
+              <option value="">Jerarquía</option>
+              <option value="jerarquia1">Jerarquía 1</option>
+              <option value="jerarquia2">Jerarquía 2</option>
+              <option value="jerarquia3">Jerarquía 3</option>
+              <option value="jerarquia4">Jerarquía 4</option>
+              <option value="jerarquia5">Jerarquía 5</option>
+              <option value="jerarquia6">Jerarquía 6</option>
+            </select>
+          </div>
+
+          <div class="campo campo-corto">
+            <label>L.P.</label>
+            <input type="text" class="campo-lp" />
+          </div>
+
+          <div class="campo campo-corto">
+            <label>D.N.I.</label>
+            <input type="text" class="campo-dni" />
+          </div>
+        </div>
+
+        <div class="fila fila-dos">
+          <div class="campo">
+            <label>Nombre</label>
+            <input type="text" class="campo-nombre" />
+          </div>
+
+          <div class="campo">
+            <label>Apellido</label>
+            <input type="text" class="campo-apellido" />
+          </div>
+        </div>
+
+        <div class="fila fila-dos">
+          <div class="campo">
+            <label>Destino</label>
+            <input type="text" class="campo-destino" />
+          </div>
+
+          <div class="campo">
+            <label>Superintendencia / Dirección General</label>
+            <input type="text" class="campo-superintendencia" />
+          </div>
+        </div>
+
+        <div class="fila fila-uno">
+          <div class="campo campo-completo">
+            <label>Motivo de la comisión</label>
+            <input type="text" class="campo-motivo" />
+          </div>
+        </div>
+
+        <div class="fila fila-dos">
+          <div class="campo">
+            <label>Fecha de inicio</label>
+            <input type="date" class="campo-fecha-inicio" />
+          </div>
+
+          <div class="campo">
+            <label>Fecha de finalización</label>
+            <input type="date" class="campo-fecha-fin" />
+          </div>
+        </div>
+
+        <div class="fila fila-dos">
+          <div class="campo">
+            <label>Horario de salida</label>
+            <input type="time" class="campo-hora-salida" />
+          </div>
+
+          <div class="campo">
+            <label>Horario de llegada</label>
+            <input type="time" class="campo-hora-llegada" />
+          </div>
+        </div>
+
+        <div class="bloque-ubicaciones">
+          <div class="contenedor-ubicaciones"></div>
+
+          <div class="acciones-ubicaciones">
+            <button
+              type="button"
+              class="btn-agregar-ubicacion boton-secundario-pequeno"
+            >
+              + AGREGAR OTRO PAÍS
+            </button>
+
+            <button
+              type="button"
+              class="btn-eliminar-ubicacion boton-secundario-pequeno oculto"
+            >
+              - ELIMINAR CIUDAD Y PAÍS
+            </button>
+          </div>
+        </div>
+
+        <div class="fila fila-dos">
+          <div class="campo">
+            <label>Duración total</label>
+            <input type="text" class="campo-duracion" readonly />
+          </div>
+
+          <div class="campo">
+            <label>Gastos</label>
+
+            <div class="multiselect" data-nombre="gastos">
+              <button type="button" class="multiselect-boton">
+                EN CASO DE EROGAR
+              </button>
+
+              <div class="multiselect-menu">
+                <label class="multiselect-opcion">
+                  <input type="checkbox" value="Pasajes" />
+                  <span>Pasajes</span>
+                </label>
+
+                <label class="multiselect-opcion">
+                  <input type="checkbox" value="Viáticos" />
+                  <span>Viáticos</span>
+                </label>
+
+                <label class="multiselect-opcion">
+                  <input type="checkbox" value="Alojamiento" />
+                  <span>Alojamiento</span>
+                </label>
+
+                <label class="multiselect-opcion">
+                  <input type="checkbox" value="Cobertura médica" />
+                  <span>Cobertura médica</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="fila fila-dos">
+          <div class="campo">
+            <label>Número de expediente</label>
+            <input type="text" class="campo-expediente" />
+          </div>
+
+          <div class="campo">
+            <label>Medio de transporte</label>
+
+            <div class="multiselect" data-nombre="transporte">
+              <button type="button" class="multiselect-boton">
+                EN CASO DE EROGAR
+              </button>
+
+              <div class="multiselect-menu">
+                <label class="multiselect-opcion">
+                  <input type="checkbox" value="Avión" />
+                  <span>Avión</span>
+                </label>
+
+                <label class="multiselect-opcion">
+                  <input type="checkbox" value="Buquebus" />
+                  <span>Buquebus</span>
+                </label>
+
+                <label class="multiselect-opcion">
+                  <input type="checkbox" value="Medio terrestre" />
+                  <span>Medio terrestre</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="fila fila-uno">
+          <div class="campo campo-completo">
+            <label>Aporte al organismo</label>
+            <input type="text" class="campo-aporte" />
+          </div>
+        </div>
+      </section>
+    </template>
+  </body>
+</html>

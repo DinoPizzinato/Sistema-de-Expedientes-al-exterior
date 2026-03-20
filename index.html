@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inicio | Sección INTERCAMBIO</title>
+    <link rel="stylesheet" href="./css/Comisiones.css" />
+  </head>
+  <body>
+    <main class="contenido-index-full">
+      <section class="hero-index">
+        <div class="hero-etiqueta">SECCIÓN INTERCAMBIO</div>
+
+        <h1 class="hero-titulo">Sistema de gestión de trámites al exterior</h1>
+
+        <p class="hero-texto">
+          Bienvenido al sistema de gestión de la Sección INTERCAMBIO. Desde aquí
+          podrá acceder a los módulos de
+          <strong>comisiones al exterior</strong>,
+          <strong>expulsiones</strong> y <strong>extradiciones</strong>,
+          centralizando toda la operatoria en un único entorno.
+        </p>
+      </section>
+
+      <section class="panel-opciones">
+        <article class="tarjeta-opcion">
+          <h2>Comisiones al exterior</h2>
+          <p>
+            Carga completa de funcionarios, destinos, fechas, gastos y
+            generación de documentación administrativa.
+          </p>
+          <a href="./Comisiones.html" class="boton-principal enlace-boton">
+            INGRESAR
+          </a>
+        </article>
+
+        <article class="tarjeta-opcion">
+          <h2>Expulsiones</h2>
+          <p>Gestión de procedimientos de expulsión. Módulo en desarrollo.</p>
+          <a href="#" class="boton-secundario enlace-boton"> PRÓXIMAMENTE </a>
+        </article>
+
+        <article class="tarjeta-opcion">
+          <h2>Extradiciones</h2>
+          <p>Gestión de procedimientos de extradición. Módulo en desarrollo.</p>
+          <a href="#" class="boton-secundario enlace-boton"> PRÓXIMAMENTE </a>
+        </article>
+      </section>
+    </main>
+
+    <style>
+      body {
+        background-color: #dfe3e8;
+        margin: 0;
+      }
+
+      .contenido-index-full {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px 50px;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+      }
+
+      .hero-index {
+        border: 1px solid #c7ced8;
+        background-color: #f3f5f8;
+        padding: 30px 28px;
+      }
+
+      .hero-etiqueta {
+        display: inline-block;
+        margin-bottom: 14px;
+        padding: 4px 10px;
+        background-color: #e9edf3;
+        border: 1px solid #cbd2dc;
+        color: #6a7587;
+        font-size: 11px;
+        font-weight: bold;
+        letter-spacing: 0.6px;
+      }
+
+      .hero-titulo {
+        font-size: 32px;
+        line-height: 1.2;
+        color: #44546a;
+        margin-bottom: 14px;
+      }
+
+      .hero-texto {
+        font-size: 15px;
+        line-height: 1.6;
+        color: #526178;
+        max-width: 900px;
+      }
+
+      .panel-opciones {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+
+      .tarjeta-opcion {
+        border: 1px solid #c7ced8;
+        background-color: #f8fafc;
+        padding: 22px 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        min-height: 220px;
+      }
+
+      .tarjeta-opcion h2 {
+        font-size: 18px;
+        color: #44546a;
+      }
+
+      .tarjeta-opcion p {
+        font-size: 14px;
+        line-height: 1.6;
+        color: #5a687d;
+        flex: 1;
+      }
+
+      .enlace-boton {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+      }
+
+      @media (max-width: 980px) {
+        .panel-opciones {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-titulo {
+          font-size: 26px;
+        }
+      }
+    </style>
+  </body>
+</html>

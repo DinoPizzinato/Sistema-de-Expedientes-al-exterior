@@ -1,0 +1,371 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  background-color: #dfe3e8;
+  color: #44546a;
+}
+
+.contenedor-general {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* MENU LATERAL */
+.menu-lateral {
+  width: 130px;
+  min-height: 100vh;
+  background-color: #e7eaef;
+  border-right: 1px solid #c7ced8;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 8px 12px;
+}
+
+.menu-superior {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 18px;
+  width: 100%;
+}
+.icono-casa {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  text-decoration: none;
+  color: #495a71;
+  font-size: 20px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.icono-casa:hover {
+  background-color: #d4dae3;
+}
+
+.barra-busqueda {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  border: 1px solid #bfc7d2;
+  background-color: #ffffff;
+  height: 16px;
+  overflow: hidden;
+}
+
+.barra-busqueda input {
+  border: none;
+  outline: none;
+  flex: 1;
+  min-width: 0;
+  font-size: 10px;
+  padding: 0 4px;
+  background: transparent;
+  height: 100%;
+}
+
+.barra-busqueda button {
+  width: 16px;
+  height: 14px;
+  border: none;
+  background-color: #6b7788;
+  color: #ffffff;
+  font-size: 9px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.botones-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.boton-menu {
+  display: block;
+  text-decoration: none;
+  text-align: center;
+  background-color: #6f63ff;
+  color: #ffffff;
+  padding: 9px 4px;
+  font-size: 11px;
+  font-weight: bold;
+  border: 1px solid #8178f2;
+}
+
+.boton-menu:hover {
+  background-color: #5f54ea;
+}
+
+.boton-menu.activo {
+  background-color: #675cf0;
+}
+
+/* CONTENIDO */
+.contenido-principal {
+  flex: 1;
+  padding: 14px 14px 24px;
+}
+
+.bloque-funcionario {
+  border: 1px solid #c7ced8;
+  background-color: #f3f5f8;
+  padding: 16px 12px 18px;
+  margin-bottom: 18px;
+  position: relative;
+}
+
+.encabezado-formulario {
+  position: absolute;
+  top: -9px;
+  left: 10px;
+  background-color: #dfe3e8;
+  padding: 0 8px;
+  font-size: 12px;
+  color: #97a0af;
+  font-weight: bold;
+}
+
+.fila {
+  display: grid;
+  gap: 12px 14px;
+  margin-bottom: 12px;
+}
+
+.fila-tres {
+  grid-template-columns: 1.1fr 1fr 1fr;
+}
+
+.fila-dos {
+  grid-template-columns: 1fr 1fr;
+}
+
+.fila-uno {
+  grid-template-columns: 1fr;
+}
+
+.campo {
+  display: grid;
+  grid-template-columns: 132px 1fr;
+  align-items: center;
+  gap: 8px;
+}
+
+.campo-corto {
+  grid-template-columns: 58px 1fr;
+}
+
+.campo label {
+  font-size: 12px;
+  font-weight: bold;
+  color: #4a596f;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+.campo input,
+.campo select {
+  height: 28px;
+  border: 1px solid #c6ccd6;
+  background-color: #ffffff;
+  color: #435066;
+  font-size: 12px;
+  padding: 5px 8px;
+  outline: none;
+}
+
+.campo input:focus,
+.campo select:focus,
+.multiselect-boton:focus,
+.selector-eliminar-funcionario:focus {
+  border-color: #6f63ff;
+  box-shadow: 0 0 0 2px rgba(111, 99, 255, 0.12);
+}
+
+.campo input[readonly] {
+  background-color: #eef2f6;
+}
+
+/* UBICACIONES */
+.bloque-ubicaciones {
+  border: 1px solid #ccd3dc;
+  background-color: #f8fafc;
+  padding: 10px 10px 12px;
+  margin-bottom: 14px;
+}
+
+.ubicacion-item {
+  margin-bottom: 10px;
+}
+
+.acciones-ubicaciones {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+/* BOTONES */
+.boton-secundario,
+.boton-secundario-pequeno,
+.boton-principal {
+  border: 1px solid #bcc5d0;
+  background-color: #edf2f7;
+  color: #44546a;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.boton-secundario:hover,
+.boton-secundario-pequeno:hover {
+  background-color: #e1e8f0;
+}
+
+.boton-principal:hover {
+  background-color: #5c52e5;
+}
+
+.boton-secundario {
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+.boton-secundario-pequeno {
+  padding: 7px 10px;
+  font-size: 12px;
+}
+
+.boton-principal {
+  padding: 11px 18px;
+  background-color: #6f63ff;
+  color: #ffffff;
+  border-color: #6a5df0;
+  font-size: 12px;
+}
+
+.contenedor-acciones-funcionarios {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.bloque-eliminar-funcionario {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.selector-eliminar-funcionario {
+  height: 32px;
+  border: 1px solid #c6ccd6;
+  background-color: #ffffff;
+  color: #435066;
+  font-size: 12px;
+  padding: 5px 8px;
+  min-width: 190px;
+  outline: none;
+}
+
+.contenedor-boton-final {
+  display: flex;
+  justify-content: center;
+  padding: 0 0 24px;
+}
+
+/* MULTISELECT */
+.multiselect {
+  position: relative;
+  width: 100%;
+}
+
+.multiselect-boton {
+  width: 100%;
+  height: 28px;
+  border: 1px solid #c6ccd6;
+  background-color: #ffffff;
+  color: #435066;
+  font-size: 11px;
+  padding: 5px 24px 5px 8px;
+  text-align: left;
+  position: relative;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.multiselect-boton::after {
+  content: "▼";
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 10px;
+  color: #56657a;
+}
+
+.multiselect-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  width: 100%;
+  background-color: #ffffff;
+  border: 1px solid #c6ccd6;
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.08);
+  z-index: 50;
+}
+
+.multiselect.abierto .multiselect-menu {
+  display: block;
+}
+
+.multiselect-opcion {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  font-size: 11px;
+  color: #435066;
+  cursor: pointer;
+}
+
+.multiselect-opcion:hover {
+  background-color: #eef2f7;
+}
+
+.oculto {
+  display: none;
+}
+
+@media (max-width: 1100px) {
+  .fila-tres,
+  .fila-dos {
+    grid-template-columns: 1fr;
+  }
+
+  .campo,
+  .campo-corto {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .contenedor-acciones-funcionarios {
+    flex-direction: column;
+  }
+}
