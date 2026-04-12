@@ -3,8 +3,25 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none'"
+    />
+    <meta
+      name="robots"
+      content="noindex, nofollow, noarchive, nosnippet, noimageindex"
+    />
+    <meta http-equiv="Referrer-Policy" content="no-referrer" />
+    <meta
+      http-equiv="Cache-Control"
+      content="no-store, no-cache, must-revalidate, max-age=0"
+    />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <title>Inicio | Sección INTERCAMBIO</title>
     <link rel="stylesheet" href="./css/Comisiones.css" />
+    <link rel="stylesheet" href="./css/seguridad.css" />
+    <script src="./JavaScript/seguridad.js" defer></script>
   </head>
   <body>
     <main class="contenido-index-full">
@@ -36,8 +53,13 @@
 
         <article class="tarjeta-opcion">
           <h2>Expulsiones</h2>
-          <p>Gestión de procedimientos de expulsión. Módulo en desarrollo.</p>
-          <a href="#" class="boton-secundario enlace-boton"> PRÓXIMAMENTE </a>
+          <p>
+            Carga completa de funcionarios, destinos, fechas, gastos y
+            generación de documentación administrativa.
+          </p>
+          <a href="./expulsiones.html" class="boton-principal enlace-boton">
+            INGRESAR
+          </a>
         </article>
 
         <article class="tarjeta-opcion">
@@ -75,16 +97,16 @@
         padding: 4px 10px;
         background-color: #e9edf3;
         border: 1px solid #cbd2dc;
-        color: #6a7587;
-        font-size: 11px;
+        color: #000000;
+        font-size: 15px;
         font-weight: bold;
-        letter-spacing: 0.6px;
+        letter-spacing: 1.6px;
       }
 
       .hero-titulo {
         font-size: 32px;
         line-height: 1.2;
-        color: #44546a;
+        color: #464545fd;
         margin-bottom: 14px;
       }
 

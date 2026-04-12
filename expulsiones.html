@@ -1,0 +1,568 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none'"
+    />
+    <meta
+      name="robots"
+      content="noindex, nofollow, noarchive, nosnippet, noimageindex"
+    />
+    <meta http-equiv="Referrer-Policy" content="no-referrer" />
+    <meta
+      http-equiv="Cache-Control"
+      content="no-store, no-cache, must-revalidate, max-age=0"
+    />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>Expulsiones</title>
+    <link rel="stylesheet" href="./css/expulsiones.css" />
+    <link rel="stylesheet" href="./css/seguridad.css" />
+    <script src="./JavaScript/seguridad.js" defer></script>
+    <script src="./JavaScript/docxTemplates.js" defer></script>
+    <script src="./JavaScript/expulsiones-word.js" defer></script>
+    <script src="./JavaScript/expulsiones.js" defer></script>
+  </head>
+  <body>
+    <div class="contenedor-general">
+      <aside class="menu-lateral">
+        <div class="menu-superior">
+          <a href="./index.html" class="icono-casa" title="Volver al inicio"
+            >⌂</a
+          >
+
+          <div class="barra-busqueda">
+            <input type="text" aria-label="Buscar" />
+            <button type="button">⌕</button>
+          </div>
+        </div>
+
+        <nav class="botones-menu">
+          <a href="./Comisiones.html" class="boton-menu">COMISIONES</a>
+          <a href="./expulsiones.html" class="boton-menu activo">EXPULSIONES</a>
+          <a href="#" class="boton-menu">EXTRADICCIONES</a>
+        </nav>
+      </aside>
+
+      <main class="contenido-principal">
+        <div class="bloque-recordatorio-motivo">
+          <div class="encabezado-bloque-secundario">Motivo del trámite</div>
+
+          <div class="fila fila-uno">
+            <div class="campo campo-completo">
+              <label>Motivo</label>
+              <input type="text" value="EXPULSIÓN" readonly />
+            </div>
+          </div>
+
+          <div class="fila fila-uno">
+            <div class="campo campo-completo">
+              <label>Número interno de expediente</label>
+              <input type="text" id="numero-interno-expediente" />
+            </div>
+          </div>
+
+          <div class="fila fila-uno">
+            <div class="campo campo-completo">
+              <label>Número de expediente</label>
+              <input type="text" id="expediente-electronico" />
+            </div>
+          </div>
+        </div>
+
+        <div class="bloque-datos-judiciales">
+          <div class="encabezado-bloque-secundario">Datos judiciales</div>
+
+          <div class="fila fila-uno">
+            <div class="campo campo-completo">
+              <label>Organismo judicial</label>
+              <input type="text" id="organismo-judicial" />
+            </div>
+          </div>
+
+          <div class="fila fila-dos">
+            <div class="campo">
+              <label>Juez (opcional)</label>
+              <div class="campo-compuesto">
+                <select id="tratamiento-juez" class="campo-tratamiento">
+                  <option value="">Seleccionar</option>
+                  <option value="doctor">Doctor</option>
+                  <option value="doctora">Doctora</option>
+                </select>
+                <input
+                  type="text"
+                  id="juez-cargo"
+                  placeholder="Completar si corresponde"
+                />
+              </div>
+            </div>
+
+            <div class="campo">
+              <label>Secretario/a (opcional)</label>
+              <div class="campo-compuesto">
+                <select id="tratamiento-secretario" class="campo-tratamiento">
+                  <option value="">Seleccionar</option>
+                  <option value="doctor">Doctor</option>
+                  <option value="doctora">Doctora</option>
+                </select>
+                <input
+                  type="text"
+                  id="secretaria-cargo"
+                  placeholder="Completar si corresponde"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="fila fila-uno">
+            <div class="campo campo-completo">
+              <label>Carátula de la causa judicial</label>
+              <input type="text" id="caratula-causa-judicial" />
+            </div>
+          </div>
+
+          <div class="fila fila-dos">
+            <div class="campo">
+              <label>Número de expediente de la causa judicial</label>
+              <input type="text" id="expediente-causa-judicial" />
+            </div>
+
+            <div class="campo">
+              <label>Nacionalidad del detenido</label>
+              <input type="text" id="nacionalidad-detenido" />
+            </div>
+          </div>
+
+          <div class="fila fila-uno">
+            <div class="campo campo-completo">
+              <label>Nombre del detenido</label>
+              <input type="text" id="nombre-detenido" />
+            </div>
+          </div>
+        </div>
+
+        <div id="contenedor-funcionarios"></div>
+
+        <div id="bloque-totales" class="bloque-totales oculto">
+          <div class="encabezado-bloque-secundario">
+            Montos totales a erogar
+          </div>
+
+          <div id="fila-totales-principales" class="fila fila-dos">
+            <div id="campo-total-pasajes-contenedor" class="campo">
+              <label>Pasajes</label>
+              <input type="text" id="total-pasajes" readonly />
+            </div>
+
+            <div class="campo">
+              <label>Viáticos</label>
+              <input type="text" id="total-viaticos" readonly />
+            </div>
+          </div>
+
+          <div class="fila fila-dos">
+            <div class="campo">
+              <label>Alojamiento</label>
+              <input type="text" id="total-alojamiento" readonly />
+            </div>
+
+            <div class="campo">
+              <label>Cobertura médica</label>
+              <input type="text" id="total-cobertura" readonly />
+            </div>
+          </div>
+
+          <div class="fila fila-uno">
+            <div class="campo campo-completo">
+              <label>Total general</label>
+              <input type="text" id="total-general" readonly />
+            </div>
+          </div>
+        </div>
+
+        <div class="contenedor-acciones-funcionarios">
+          <button
+            type="button"
+            id="btn-agregar-funcionario"
+            class="boton-secundario"
+          >
+            + AGREGAR OTRO FUNCIONARIO
+          </button>
+
+          <div class="bloque-eliminar-funcionario">
+            <select
+              id="selector-funcionario-eliminar"
+              class="selector-eliminar-funcionario"
+            >
+              <option value="">Seleccionar funcionario</option>
+            </select>
+
+            <button
+              type="button"
+              id="btn-eliminar-funcionario"
+              class="boton-secundario"
+            >
+              - ELIMINAR FUNCIONARIO
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <div class="contenedor-boton-final">
+      <button type="button" id="btn-generar-word" class="boton-principal">
+        ACEPTAR Y GENERAR WORD
+      </button>
+    </div>
+
+    <div
+      id="modal-aviso"
+      class="modal-aviso oculto"
+      role="dialog"
+      aria-modal="true"
+      aria-hidden="true"
+      aria-labelledby="modal-aviso-titulo"
+      aria-describedby="modal-aviso-mensaje"
+    >
+      <div class="modal-aviso-panel">
+        <div class="modal-aviso-franja"></div>
+
+        <div class="modal-aviso-encabezado">
+          <div id="modal-aviso-titulo" class="modal-aviso-titulo">Aviso</div>
+
+          <button
+            type="button"
+            id="modal-aviso-cerrar"
+            class="modal-aviso-cerrar"
+            aria-label="Cerrar aviso"
+          >
+            &times;
+          </button>
+        </div>
+
+        <div id="modal-aviso-mensaje" class="modal-aviso-mensaje"></div>
+
+        <div class="modal-aviso-acciones">
+          <button
+            type="button"
+            id="modal-aviso-aceptar"
+            class="boton-principal modal-aviso-boton"
+          >
+            ACEPTAR
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <template id="template-funcionario">
+      <section class="bloque-funcionario">
+        <div class="encabezado-formulario">
+          Datos del funcionario <span class="numero-funcionario"></span>
+        </div>
+
+        <div class="fila fila-tres">
+          <div class="campo">
+            <label>Jerarquía</label>
+            <select class="campo-jerarquia">
+              <option value="">Seleccionar jerarquía</option>
+              <option value="jefe_policia">Jefe de Policía (J1)</option>
+              <option value="subjefe_policia">Subjefe de Policía (J2)</option>
+              <option value="comisario_general">Comisario General</option>
+              <option value="comisario_mayor">Comisario Mayor</option>
+              <option value="comisario_inspector">Comisario Inspector</option>
+              <option value="comisario">Comisario</option>
+              <option value="subcomisario">Subcomisario</option>
+              <option value="principal">Principal</option>
+              <option value="inspector">Inspector</option>
+              <option value="subinspector">Subinspector</option>
+              <option value="ayudante">Ayudante</option>
+              <option value="suboficial_mayor">Suboficial Mayor</option>
+              <option value="suboficial_auxiliar">Suboficial Auxiliar</option>
+              <option value="suboficial_escribiente">
+                Suboficial Escribiente
+              </option>
+              <option value="sargento_primero">Sargento 1ro</option>
+              <option value="sargento">Sargento</option>
+              <option value="cabo_primero">Cabo 1ro</option>
+              <option value="cabo">Cabo</option>
+              <option value="agente">Agente</option>
+              <option value="auxiliar_superior_primera">
+                Auxiliar Superior 1°
+              </option>
+              <option value="auxiliar_superior_segunda">
+                Auxiliar Superior 2°
+              </option>
+              <option value="auxiliar_superior_tercera">
+                Auxiliar Superior 3°
+              </option>
+              <option value="auxiliar_superior_cuarta">
+                Auxiliar Superior 4°
+              </option>
+              <option value="auxiliar_superior_quinta">
+                Auxiliar Superior 5°
+              </option>
+              <option value="auxiliar_superior_sexta">
+                Auxiliar Superior 6°
+              </option>
+              <option value="auxiliar_primera">Auxiliar de 1°</option>
+              <option value="auxiliar_segunda">Auxiliar de 2°</option>
+              <option value="auxiliar_tercera">Auxiliar de 3°</option>
+              <option value="auxiliar_cuarta">Auxiliar de 4°</option>
+              <option value="auxiliar_quinta">Auxiliar de 5°</option>
+              <option value="auxiliar_sexta">Auxiliar de 6°</option>
+              <option value="oficial_inteligencia_1">
+                Oficial de Inteligencia
+              </option>
+              <option value="auxiliar_inteligencia_1">
+                Auxiliar de Inteligencia
+              </option>
+            </select>
+          </div>
+
+          <div class="campo campo-corto">
+            <label>L.P.</label>
+            <input type="text" class="campo-lp" />
+          </div>
+
+          <div class="campo campo-corto">
+            <label>D.N.I.</label>
+            <input type="text" class="campo-dni" />
+          </div>
+        </div>
+
+        <div class="fila fila-dos fila-nombre-apellido">
+          <div class="campo">
+            <label>Nombre</label>
+            <input type="text" class="campo-nombre" />
+          </div>
+
+          <div class="campo">
+            <label>Apellido</label>
+            <input type="text" class="campo-apellido" />
+          </div>
+        </div>
+
+        <div class="fila fila-uno fila-siglas oculto">
+          <div class="campo campo-completo">
+            <label>Siglas</label>
+            <input type="text" class="campo-siglas" />
+          </div>
+        </div>
+
+        <div class="fila fila-uno">
+          <div class="campo campo-completo">
+            <label>Destino</label>
+            <input type="text" class="campo-destino" />
+          </div>
+        </div>
+
+        <div class="fila fila-dos">
+          <div class="campo">
+            <label>Fecha de inicio</label>
+            <input type="date" class="campo-fecha-inicio" />
+          </div>
+
+          <div class="campo">
+            <label>Fecha de finalización</label>
+            <input type="date" class="campo-fecha-fin" />
+          </div>
+        </div>
+
+        <div class="fila fila-dos">
+          <div class="campo">
+            <label>Horario de salida</label>
+            <input type="time" class="campo-hora-salida" />
+          </div>
+
+          <div class="campo">
+            <label>Horario de llegada</label>
+            <input type="time" class="campo-hora-llegada" />
+          </div>
+        </div>
+
+        <div class="fila fila-uno">
+          <div class="campo">
+            <label>Medio de transporte</label>
+
+            <div class="multiselect" data-nombre="transporte">
+              <button type="button" class="multiselect-boton">
+                SELECCIONAR
+              </button>
+
+              <div class="multiselect-menu">
+                <label class="multiselect-opcion">
+                  <input type="checkbox" value="Avión" />
+                  <span>Avión</span>
+                </label>
+
+                <label class="multiselect-opcion">
+                  <input type="checkbox" value="Buquebus" />
+                  <span>Buquebus</span>
+                </label>
+
+                <label class="multiselect-opcion">
+                  <input type="checkbox" value="Medio terrestre" />
+                  <span>Medio terrestre</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bloque-ubicaciones">
+          <div class="contenedor-ubicaciones"></div>
+
+          <div class="acciones-ubicaciones">
+            <button
+              type="button"
+              class="btn-agregar-ubicacion boton-secundario-pequeno"
+            >
+              + AGREGAR OTRO PAÍS
+            </button>
+
+            <button
+              type="button"
+              class="btn-eliminar-ubicacion boton-secundario-pequeno oculto"
+            >
+              - ELIMINAR CIUDAD Y PAÍS
+            </button>
+          </div>
+        </div>
+
+        <div class="fila fila-dos">
+          <div class="campo">
+            <label>Duración total</label>
+            <input type="text" class="campo-duracion" readonly />
+          </div>
+
+          <div class="campo">
+            <label>Gastos</label>
+
+            <div class="multiselect" data-nombre="gastos">
+              <button type="button" class="multiselect-boton">
+                EN CASO DE EROGAR
+              </button>
+
+              <div class="multiselect-menu">
+                <label class="multiselect-opcion">
+                  <input type="checkbox" value="Pasajes" />
+                  <span>Pasajes</span>
+                </label>
+
+                <label class="multiselect-opcion">
+                  <input type="checkbox" value="Viáticos" />
+                  <span>Viáticos</span>
+                </label>
+
+                <label class="multiselect-opcion">
+                  <input type="checkbox" value="Alojamiento" />
+                  <span>Alojamiento</span>
+                </label>
+
+                <label class="multiselect-opcion">
+                  <input type="checkbox" value="Cobertura médica" />
+                  <span>Cobertura médica</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bloque-montos-gastos oculto">
+          <div class="encabezado-bloque-secundario">Detalle de gastos</div>
+          <div class="contenedor-montos-gastos"></div>
+        </div>
+
+        <div class="bloque-liquidacion oculto">
+          <div class="encabezado-bloque-secundario">Liquidación automática</div>
+
+          <div class="fila fila-tres">
+            <div class="campo">
+              <label>Zona</label>
+              <input type="text" class="campo-zona" readonly />
+            </div>
+
+            <div class="campo">
+              <label>Moneda</label>
+              <input type="text" class="campo-moneda" readonly />
+            </div>
+
+            <div class="campo">
+              <label>Grupo</label>
+              <input type="text" class="campo-grupo" readonly />
+            </div>
+          </div>
+
+          <div class="fila fila-tres">
+            <div class="campo">
+              <label>Días computables</label>
+              <input type="text" class="campo-dias-computables" readonly />
+            </div>
+
+            <div class="campo">
+              <label>Noches alojamiento</label>
+              <input type="text" class="campo-noches-alojamiento" readonly />
+            </div>
+
+            <div class="campo">
+              <label>Días cobertura médica</label>
+              <input type="text" class="campo-dias-cobertura" readonly />
+            </div>
+          </div>
+
+          <div class="fila fila-dos fila-conversion-eur oculto">
+            <div class="campo">
+              <label>Valor de 9 USD en EUR</label>
+              <input
+                type="number"
+                min="0"
+                step="0.0001"
+                class="campo-valor-9usd-eur"
+                placeholder="Cargar valor convertido"
+              />
+            </div>
+
+            <div class="campo">
+              <label>Conversor</label>
+              <a
+                href="https://www.aduanaargentina.com/conversor-de-monedas/"
+                target="_blank"
+                class="enlace-boton-externo"
+              >
+                ABRIR CONVERSOR
+              </a>
+            </div>
+          </div>
+
+          <div class="fila fila-dos">
+            <div class="campo">
+              <label>Total viáticos</label>
+              <input type="text" class="campo-total-viaticos" readonly />
+            </div>
+
+            <div class="campo">
+              <label>Total alojamiento</label>
+              <input type="text" class="campo-total-alojamiento" readonly />
+            </div>
+          </div>
+
+          <div class="fila fila-dos">
+            <div class="campo">
+              <label>Total cobertura médica</label>
+              <input type="text" class="campo-total-cobertura" readonly />
+            </div>
+
+            <div class="campo">
+              <label>Total gastos visibles</label>
+              <input type="text" class="campo-total-gastos" readonly />
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </template>
+  </body>
+</html>
