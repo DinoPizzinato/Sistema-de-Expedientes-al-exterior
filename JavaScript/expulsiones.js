@@ -13,6 +13,9 @@ document.addEventListener("DOMContentLoaded", () => {
     "selector-funcionario-eliminar",
   );
   const btnGenerarWord = document.getElementById("btn-generar-word");
+  const burbujaConversorAduana = document.getElementById(
+    "burbuja-conversor-aduana",
+  );
 
   const bloqueTotales = document.getElementById("bloque-totales");
   const filaTotalesPrincipales = document.getElementById(
@@ -32,7 +35,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnCerrarModalAviso = document.getElementById("modal-aviso-cerrar");
   const btnAceptarModalAviso = document.getElementById("modal-aviso-aceptar");
 
+  const BURBUJA_ADUANA_STORAGE_KEY = "expulsionesBurbujaAduanaPos";
   let ultimoElementoActivo = null;
+  let arrastreBurbujaAduana = null;
+  let bloquearClickBurbujaAduana = false;
 
   const TARIFAS = {
     A: {
@@ -359,6 +365,186 @@ document.addEventListener("DOMContentLoaded", () => {
       jerarquia === "oficial_inteligencia_1" ||
       jerarquia === "auxiliar_inteligencia_1"
     );
+  }
+
+  function limitarNumero(valor, minimo, maximo) {
+    return Math.min(Math.max(valor, minimo), maximo);
+  }
+
+  function obtenerLimitesBurbujaAduana() {
+    if (!burbujaConversorAduana) return null;
+
+    const rect = burbujaConversorAduana.getBoundingClientRect();
+    const margen = window.innerWidth <= 1100 ? 10 : 12;
+
+    return {
+      margen,
+      maxLeft: Math.max(margen, window.innerWidth - rect.width - margen),
+      maxTop: Math.max(margen, window.innerHeight - rect.height - margen),
+    };
+  }
+
+  function fijarPosicionBurbujaAduana(left, top) {
+    if (!burbujaConversorAduana) return;
+
+    const limites = obtenerLimitesBurbujaAduana();
+    if (!limites) return;
+
+    burbujaConversorAduana.style.left = `${limitarNumero(
+      left,
+      limites.margen,
+      limites.maxLeft,
+    )}px`;
+    burbujaConversorAduana.style.top = `${limitarNumero(
+      top,
+      limites.margen,
+      limites.maxTop,
+    )}px`;
+    burbujaConversorAduana.style.right = "auto";
+    burbujaConversorAduana.style.bottom = "auto";
+  }
+
+  function guardarPosicionBurbujaAduana() {
+    if (!burbujaConversorAduana?.style.left || !burbujaConversorAduana?.style.top) {
+      return;
+    }
+
+    try {
+      localStorage.setItem(
+        BURBUJA_ADUANA_STORAGE_KEY,
+        JSON.stringify({
+          left: parseFloat(burbujaConversorAduana.style.left),
+          top: parseFloat(burbujaConversorAduana.style.top),
+        }),
+      );
+    } catch (error) {
+      console.warn("No se pudo guardar la posiciÃ³n de la burbuja.", error);
+    }
+  }
+
+  function restaurarPosicionBurbujaAduana() {
+    if (!burbujaConversorAduana) return;
+
+    try {
+      const guardada = JSON.parse(
+        localStorage.getItem(BURBUJA_ADUANA_STORAGE_KEY) || "null",
+      );
+
+      if (
+        guardada &&
+        Number.isFinite(guardada.left) &&
+        Number.isFinite(guardada.top)
+      ) {
+        fijarPosicionBurbujaAduana(guardada.left, guardada.top);
+      }
+    } catch (error) {
+      console.warn("No se pudo restaurar la posiciÃ³n de la burbuja.", error);
+    }
+  }
+
+  function iniciarArrastreBurbujaAduana(event) {
+    if (!burbujaConversorAduana) return;
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+
+    const rect = burbujaConversorAduana.getBoundingClientRect();
+    fijarPosicionBurbujaAduana(rect.left, rect.top);
+
+    arrastreBurbujaAduana = {
+      pointerId: event.pointerId,
+      offsetX: event.clientX - rect.left,
+      offsetY: event.clientY - rect.top,
+      originX: event.clientX,
+      originY: event.clientY,
+      moved: false,
+    };
+
+    burbujaConversorAduana.classList.add("arrastrando");
+    burbujaConversorAduana.setPointerCapture?.(event.pointerId);
+    event.preventDefault();
+  }
+
+  function moverBurbujaAduana(event) {
+    if (!arrastreBurbujaAduana || event.pointerId !== arrastreBurbujaAduana.pointerId) {
+      return;
+    }
+
+    if (
+      Math.abs(event.clientX - arrastreBurbujaAduana.originX) > 4 ||
+      Math.abs(event.clientY - arrastreBurbujaAduana.originY) > 4
+    ) {
+      arrastreBurbujaAduana.moved = true;
+    }
+
+    fijarPosicionBurbujaAduana(
+      event.clientX - arrastreBurbujaAduana.offsetX,
+      event.clientY - arrastreBurbujaAduana.offsetY,
+    );
+    event.preventDefault();
+  }
+
+  function terminarArrastreBurbujaAduana(event) {
+    if (!arrastreBurbujaAduana || event.pointerId !== arrastreBurbujaAduana.pointerId) {
+      return;
+    }
+
+    const movio = arrastreBurbujaAduana.moved;
+    arrastreBurbujaAduana = null;
+    burbujaConversorAduana?.classList.remove("arrastrando");
+
+    try {
+      burbujaConversorAduana?.releasePointerCapture?.(event.pointerId);
+    } catch (error) {
+      console.warn("No se pudo liberar el arrastre de la burbuja.", error);
+    }
+
+    guardarPosicionBurbujaAduana();
+
+    if (movio) {
+      bloquearClickBurbujaAduana = true;
+      window.setTimeout(() => {
+        bloquearClickBurbujaAduana = false;
+      }, 0);
+    }
+  }
+
+  function ajustarBurbujaAduanaAlViewport() {
+    if (!burbujaConversorAduana?.style.left || !burbujaConversorAduana?.style.top) {
+      return;
+    }
+
+    fijarPosicionBurbujaAduana(
+      parseFloat(burbujaConversorAduana.style.left),
+      parseFloat(burbujaConversorAduana.style.top),
+    );
+  }
+
+  function inicializarBurbujaConversorAduana() {
+    if (!burbujaConversorAduana) return;
+
+    restaurarPosicionBurbujaAduana();
+
+    burbujaConversorAduana.addEventListener(
+      "pointerdown",
+      iniciarArrastreBurbujaAduana,
+    );
+    burbujaConversorAduana.addEventListener("pointermove", moverBurbujaAduana);
+    burbujaConversorAduana.addEventListener(
+      "pointerup",
+      terminarArrastreBurbujaAduana,
+    );
+    burbujaConversorAduana.addEventListener(
+      "pointercancel",
+      terminarArrastreBurbujaAduana,
+    );
+    burbujaConversorAduana.addEventListener("click", (event) => {
+      if (!bloquearClickBurbujaAduana) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+      bloquearClickBurbujaAduana = false;
+    });
+
+    window.addEventListener("resize", ajustarBurbujaAduanaAlViewport);
   }
 
   function crearBloqueUbicacion(valores = {}) {
@@ -1164,5 +1350,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  inicializarBurbujaConversorAduana();
   crearFormularioFuncionario();
 });

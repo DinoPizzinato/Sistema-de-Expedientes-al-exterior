@@ -256,6 +256,60 @@ body {
   margin-top: 4px;
 }
 
+.burbuja-conversor-aduana {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: 82px;
+  height: 82px;
+  border: 1px solid rgba(180, 190, 204, 0.9);
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #ffffff 0%, #eef3f8 100%);
+  box-shadow:
+    0 14px 28px rgba(57, 71, 94, 0.24),
+    0 4px 10px rgba(57, 71, 94, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  z-index: 120;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.burbuja-conversor-aduana:hover {
+  transform: scale(1.04);
+  box-shadow:
+    0 18px 32px rgba(57, 71, 94, 0.28),
+    0 6px 12px rgba(57, 71, 94, 0.2);
+}
+
+.burbuja-conversor-aduana:focus {
+  outline: none;
+  box-shadow:
+    0 0 0 4px rgba(111, 99, 255, 0.18),
+    0 14px 28px rgba(57, 71, 94, 0.24);
+}
+
+.burbuja-conversor-aduana.arrastrando {
+  cursor: grabbing;
+  transform: scale(1.03);
+  transition: none;
+}
+
+.burbuja-conversor-aduana-logo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
 .boton-secundario,
 .boton-secundario-pequeno,
 .boton-principal,
@@ -543,5 +597,13 @@ body {
 
   .modal-aviso-boton {
     width: 100%;
+  }
+
+  .burbuja-conversor-aduana {
+    width: 68px;
+    height: 68px;
+    right: 14px;
+    bottom: 14px;
+    padding: 8px;
   }
 }
