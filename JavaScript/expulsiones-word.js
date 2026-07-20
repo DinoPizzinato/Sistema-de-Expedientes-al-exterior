@@ -631,15 +631,29 @@
     return `Doctor ${personName}`;
   }
 
-  function buildAuthorityRolePhrase(role, treatment, name) {
+  function buildAuthorityRolePhrase(role, treatment, name, roleDescription = "") {
     const fullName = formatTreatmentName(treatment, name);
-    if (!fullName) return "";
+    const description = normalizeSpaces(roleDescription);
 
     if (role === "juez") {
+      if (!fullName) return "";
+
       return treatment === "doctora"
         ? `a cargo de la ${fullName}`
         : `a cargo del ${fullName}`;
     }
+
+    if (description && fullName) {
+      return treatment === "doctora"
+        ? `${description} a cargo de la ${fullName}`
+        : `${description} a cargo del ${fullName}`;
+    }
+
+    if (description) {
+      return description;
+    }
+
+    if (!fullName) return "";
 
     return treatment === "doctora"
       ? `Secretaría a cargo de la ${fullName}`
@@ -942,26 +956,27 @@
     )}.`;
   }
 
-  function buildAuthorityText(datosJudiciales) {
-    const parts = [normalizeSpaces(datosJudiciales.organismoJudicial)];
+  function buildJudgeAuthorityPhrase(datosJudiciales) {
+    return buildAuthorityRolePhrase(
+      "juez",
+      datosJudiciales.tratamientoJuez,
+      datosJudiciales.juezACargo,
+    );
+  }
 
-    if (normalizeSpaces(datosJudiciales.juezACargo)) {
-      parts.push(`a cargo de ${normalizeSpaces(datosJudiciales.juezACargo)}`);
-    }
-
-    if (normalizeSpaces(datosJudiciales.secretariaACargo)) {
-      parts.push(
-        `Secretaría a cargo de ${normalizeSpaces(datosJudiciales.secretariaACargo)}`,
-      );
-    }
-
-    return parts.filter(Boolean).join(", ");
+  function buildSecretaryAuthorityPhrase(datosJudiciales) {
+    return buildAuthorityRolePhrase(
+      "secretario",
+      datosJudiciales.tratamientoSecretario,
+      datosJudiciales.secretariaACargo,
+      datosJudiciales.secretariaDescripcion,
+    );
   }
 
   function buildRequerimientoBase(datosJudiciales) {
     const separadorAutoridad =
-      normalizeSpaces(datosJudiciales.juezACargo) ||
-      normalizeSpaces(datosJudiciales.secretariaACargo)
+      buildJudgeAuthorityPhrase(datosJudiciales) ||
+      buildSecretaryAuthorityPhrase(datosJudiciales)
         ? ","
         : "";
 
@@ -1115,20 +1130,60 @@
     return `${funcionariosTexto}, ${traslado}`;
   }
 
+  function buildExpulsionPertenenciaClause(funcionario) {
+    const dependencia = normalizeSpaces(funcionario.destino);
+    if (!dependencia) return "";
+    return `perteneciente a ${buildDependenciaConArticulo(dependencia)}`;
+  }
+
   function buildFuncionariosExpulsionText(funcionarios, dependenciaPrincipal) {
+    const dependencias = uniqueBy(
+      funcionarios
+        .map((funcionario) => normalizeSpaces(funcionario.destino))
+        .filter(Boolean),
+      normalizarTexto,
+    );
+    const todosConMismaDependencia =
+      funcionarios.length > 1 &&
+      dependencias.length === 1 &&
+      funcionarios.every((funcionario) => normalizeSpaces(funcionario.destino));
+
+    if (todosConMismaDependencia) {
+      const sujetos = joinNatural(
+        funcionarios.map((funcionario, indice) =>
+          indice === 0
+            ? formatFuncionarioBase(funcionario)
+            : `al ${formatFuncionarioBase(funcionario)}`,
+        ),
+      );
+      const cuantificador = funcionarios.length === 2 ? "ambos" : "todos";
+
+      return `${sujetos}, ${cuantificador} pertenecientes a ${buildDependenciaConArticulo(
+        dependencias[0],
+      )}.`;
+    }
+
     return `${joinNatural(
-      funcionarios.map((funcionario) =>
-        formatFuncionarioConDependencia(funcionario, dependenciaPrincipal, {
-          modoSuperintendencia: "completo",
-        }),
-      ),
+      funcionarios.map((funcionario, indice) => {
+        const base =
+          indice === 0
+            ? formatFuncionarioBase(funcionario)
+            : `al ${formatFuncionarioBase(funcionario)}`;
+        const dependencia = buildExpulsionPertenenciaClause(
+          funcionario,
+          dependenciaPrincipal,
+        );
+
+        if (!dependencia) return base;
+        return indice === 0 ? `${base}, ${dependencia}` : `${base} ${dependencia}`;
+      }),
     )}.`;
   }
 
   function buildAuthorityRequesterVerb(datosJudiciales) {
     const autoridades = [
-      normalizeSpaces(datosJudiciales.juezACargo),
-      normalizeSpaces(datosJudiciales.secretariaACargo),
+      buildJudgeAuthorityPhrase(datosJudiciales),
+      buildSecretaryAuthorityPhrase(datosJudiciales),
     ].filter(Boolean);
 
     return autoridades.length > 1 ? "quienes solicitaron" : "quien solicitó";
@@ -1140,20 +1195,12 @@
     );
     const parts = [organismoJudicial];
 
-    const juezText = buildAuthorityRolePhrase(
-      "juez",
-      datosJudiciales.tratamientoJuez,
-      datosJudiciales.juezACargo,
-    );
+    const juezText = buildJudgeAuthorityPhrase(datosJudiciales);
     if (juezText) {
       parts.push(juezText);
     }
 
-    const secretarioText = buildAuthorityRolePhrase(
-      "secretario",
-      datosJudiciales.tratamientoSecretario,
-      datosJudiciales.secretariaACargo,
-    );
+    const secretarioText = buildSecretaryAuthorityPhrase(datosJudiciales);
     if (secretarioText) {
       parts.push(secretarioText);
     }
@@ -1534,7 +1581,9 @@
       normalizeSpaces(datosJudiciales.secretariaACargo) &&
       !normalizeSpaces(datosJudiciales.tratamientoSecretario)
     ) {
-      errors.push("Falta seleccionar Doctor o Doctora para el secretario/a.");
+      errors.push(
+        "Falta seleccionar Doctor o Doctora para la persona a cargo de la secretaría.",
+      );
     }
 
     if (!funcionarios.length) {

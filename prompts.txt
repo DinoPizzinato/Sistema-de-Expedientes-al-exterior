@@ -1,0 +1,23 @@
+Cuando te lo solicite, quiero que publiques esta web, pero antes verificá con fuentes oficiales actualizadas que la opción elegida siga siendo 100% gratuita, sin tarjeta, sin auto-recharge, sin suscripción obligatoria y sin riesgo de cobros sorpresa. Si existe cualquier posibilidad de pago futuro, frená y avisame antes de hacer nada.
+
+Mi prioridad es:
+1. Que no me genere cargos.
+2. Que siga siendo lo más difícil posible de copiar, clonar o reutilizar.
+3. Mantener la contraseña actual y las protecciones ya implementadas.
+
+Si la mejor opción sigue siendo Netlify Free, prepará y/o publicá el proyecto ahí.
+Si encontrás una opción mejor que cumpla exactamente esas condiciones, explicámela antes de avanzar.
+
+Tareas:
+- Revisá el proyecto actual.
+- Adaptá lo necesario para el hosting elegido.
+- Conservá la seguridad actual.
+- Si hace falta cambiar dominios permitidos, actualizalos.
+- No avances con nada que pueda implicar pago sin avisarme primero.
+- Si necesitás que yo haga un paso manual, decímelo de forma clara y concreta.
+
+Al final decime exactamente:
+- dónde quedó publicado,
+- qué cambiaste,
+- si tengo que hacer algún paso manual,
+- y si sigue siendo 100% gratuito según la documentación oficial actual.

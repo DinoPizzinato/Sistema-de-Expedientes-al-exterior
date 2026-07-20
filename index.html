@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none'"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none'; manifest-src 'self'; media-src 'self'; worker-src 'self' blob:; upgrade-insecure-requests; block-all-mixed-content"
     />
     <meta
       name="robots"
@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="./css/seguridad.css" />
     <script src="./JavaScript/seguridad.js" defer></script>
   </head>
-  <body>
+  <body class="acceso-bloqueado">
     <main class="contenido-index-full">
       <section class="hero-index">
         <div class="hero-etiqueta">SECCIÓN INTERCAMBIO</div>
@@ -162,5 +162,13 @@
         }
       }
     </style>
+    <footer>
+      <p>
+        © 2026 Sistema de Expedientes al Exterior. Todos los derechos
+        reservados. Este sitio web y su contenido están protegidos por derechos
+        de autor. Queda prohibida su copia, distribución o modificación sin
+        autorización.
+      </p>
+    </footer>
   </body>
 </html>

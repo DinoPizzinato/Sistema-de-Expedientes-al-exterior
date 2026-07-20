@@ -205,6 +205,12 @@ body {
   width: 100%;
 }
 
+.campo-apilado {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+}
+
 .campo-tratamiento {
   min-width: 0;
 }

@@ -62,6 +62,29 @@ function sanitizeRunPr(value = "") {
   return value.replace(/<w:highlight\b[^>]*\/>/g, "");
 }
 
+function convertYellowHighlightToBold(xml) {
+  return xml.replace(/<w:rPr>[\s\S]*?<\/w:rPr>/g, (runPr) => {
+    if (!runPr.includes('<w:highlight w:val="yellow"/>')) {
+      return runPr;
+    }
+
+    const withoutHighlight = runPr.replace(
+      /<w:highlight w:val="yellow"\/>/g,
+      "",
+    );
+
+    let inserts = "";
+    if (!withoutHighlight.includes("<w:b/>")) {
+      inserts += "<w:b/>";
+    }
+    if (!withoutHighlight.includes("<w:bCs/>")) {
+      inserts += "<w:bCs/>";
+    }
+
+    return withoutHighlight.replace("<w:rPr>", `<w:rPr>${inserts}`);
+  });
+}
+
 function extractParagraphParts(paragraph) {
   const startTagMatch = paragraph.match(/^<w:p\b[^>]*>/);
   if (!startTagMatch) {
@@ -171,7 +194,7 @@ function buildExpulsionDocument(xml) {
       buildPlainParagraph(paragraph, "{{total_alojamiento_corto}}"),
     30: (paragraph) =>
       buildPlainParagraph(paragraph, "{{total_cobertura_corto}}"),
-    31: (paragraph) => buildPlainParagraph(paragraph, ""),
+    31: (paragraph) => buildPlainParagraph(paragraph, "OBSERVACIONES"),
     32: (paragraph) => buildPlainParagraph(paragraph, ""),
   });
 }
@@ -196,7 +219,9 @@ function buildIfFinalizacionDocument(xml) {
 }
 
 function buildInformeNotaDocument(xml) {
-  return replaceParagraphs(xml, {
+  const normalizedXml = convertYellowHighlightToBold(xml);
+
+  return replaceParagraphs(normalizedXml, {
     3: (paragraph) =>
       buildPlainParagraph(paragraph, "{{informe_requerimiento_texto}}"),
     5: (paragraph) =>

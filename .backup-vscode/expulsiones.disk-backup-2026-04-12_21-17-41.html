@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none'; manifest-src 'self'; media-src 'self'; worker-src 'self' blob:; upgrade-insecure-requests; block-all-mixed-content"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none'"
     />
     <meta
       name="robots"
@@ -26,7 +26,7 @@
     <script src="./JavaScript/expulsiones-word.js" defer></script>
     <script src="./JavaScript/expulsiones.js" defer></script>
   </head>
-  <body class="acceso-bloqueado">
+  <body>
     <div class="contenedor-general">
       <aside class="menu-lateral">
         <div class="menu-superior">
@@ -101,25 +101,18 @@
             </div>
 
             <div class="campo">
-              <label>Secretaría / Secretario/a (opcional)</label>
-              <div class="campo-apilado">
+              <label>Secretario/a (opcional)</label>
+              <div class="campo-compuesto">
+                <select id="tratamiento-secretario" class="campo-tratamiento">
+                  <option value="">Seleccionar</option>
+                  <option value="doctor">Doctor</option>
+                  <option value="doctora">Doctora</option>
+                </select>
                 <input
                   type="text"
-                  id="secretaria-descripcion"
-                  placeholder="Ej: Secretaría N° 13 de San Martín"
+                  id="secretaria-cargo"
+                  placeholder="Completar si corresponde"
                 />
-                <div class="campo-compuesto">
-                  <select id="tratamiento-secretario" class="campo-tratamiento">
-                    <option value="">Seleccionar</option>
-                    <option value="doctor">Doctor</option>
-                    <option value="doctora">Doctora</option>
-                  </select>
-                  <input
-                    type="text"
-                    id="secretaria-cargo"
-                    placeholder="Nombre del doctor o doctora a cargo"
-                  />
-                </div>
               </div>
             </div>
           </div>
@@ -224,23 +217,6 @@
         ACEPTAR Y GENERAR WORD
       </button>
     </div>
-
-    <a
-      id="burbuja-conversor-aduana"
-      class="burbuja-conversor-aduana"
-      href="https://www.aduanaargentina.com/conversor-de-monedas/"
-      target="_blank"
-      rel="noopener noreferrer"
-      title="Abrir conversor de monedas de Aduana Argentina"
-      aria-label="Abrir conversor de monedas de Aduana Argentina"
-    >
-      <img
-        src="./logoaduana.jpg"
-        alt="Aduana Argentina"
-        class="burbuja-conversor-aduana-logo"
-        draggable="false"
-      />
-    </a>
 
     <div
       id="modal-aviso"
@@ -537,7 +513,7 @@
             </div>
           </div>
 
-          <div class="fila fila-uno fila-conversion-eur oculto">
+          <div class="fila fila-dos fila-conversion-eur oculto">
             <div class="campo">
               <label>Valor de 9 USD en EUR</label>
               <input
@@ -547,6 +523,17 @@
                 class="campo-valor-9usd-eur"
                 placeholder="Cargar valor convertido"
               />
+            </div>
+
+            <div class="campo">
+              <label>Conversor</label>
+              <a
+                href="https://www.aduanaargentina.com/conversor-de-monedas/"
+                target="_blank"
+                class="enlace-boton-externo"
+              >
+                ABRIR CONVERSOR
+              </a>
             </div>
           </div>
 

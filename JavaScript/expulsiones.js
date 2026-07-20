@@ -614,7 +614,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (etiquetaSecretario) {
-      etiquetaSecretario.textContent = "Secretario/a (opcional)";
+      etiquetaSecretario.textContent = "Secretaría / Secretario/a (opcional)";
     }
 
     formulario
@@ -628,7 +628,11 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
-  function copiarDatosCompartidos(origen, destino) {
+  function copiarDatosCompartidos(
+    origen,
+    destino,
+    formularioBaseFechasHoras = origen,
+  ) {
     if (!origen || !destino) return;
 
     const ubicaciones = obtenerUbicacionesFormulario(origen).filter(
@@ -651,7 +655,8 @@ document.addEventListener("DOMContentLoaded", () => {
       ".campo-hora-salida",
       ".campo-hora-llegada",
     ].forEach((selector) => {
-      destino.querySelector(selector).value = origen.querySelector(selector).value;
+      destino.querySelector(selector).value =
+        formularioBaseFechasHoras.querySelector(selector).value;
     });
 
     contenedorUbicaciones.innerHTML = "";
@@ -1183,6 +1188,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function crearFormularioFuncionario() {
+    const formularioBaseFechasHoras =
+      contenedorFuncionarios.querySelector(".bloque-funcionario");
     const formularioReferencia =
       contenedorFuncionarios.querySelector(".bloque-funcionario:last-of-type");
     const clone = templateFuncionario.content.cloneNode(true);
@@ -1190,7 +1197,11 @@ document.addEventListener("DOMContentLoaded", () => {
     formulario.dataset.funcionarioId = `funcionario-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
 
     inicializarFormulario(formulario);
-    copiarDatosCompartidos(formularioReferencia, formulario);
+    copiarDatosCompartidos(
+      formularioReferencia,
+      formulario,
+      formularioBaseFechasHoras,
+    );
     contenedorFuncionarios.appendChild(formulario);
     renumerarFuncionarios();
     actualizarTotalesGenerales();
@@ -1293,6 +1304,9 @@ document.addEventListener("DOMContentLoaded", () => {
       juezACargo: document.getElementById("juez-cargo").value.trim(),
       tratamientoSecretario:
         document.getElementById("tratamiento-secretario")?.value || "",
+      secretariaDescripcion: document
+        .getElementById("secretaria-descripcion")
+        .value.trim(),
       secretariaACargo: document.getElementById("secretaria-cargo").value.trim(),
       caratulaCausaJudicial: document
         .getElementById("caratula-causa-judicial")
