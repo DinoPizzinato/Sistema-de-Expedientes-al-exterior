@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://api.frankfurter.dev; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none'; manifest-src 'self'; media-src 'self'; worker-src 'self' blob:; upgrade-insecure-requests; block-all-mixed-content"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://api.frankfurter.dev; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'self' https://themoneyconverter.com; manifest-src 'self'; media-src 'self'; worker-src 'self' blob:; upgrade-insecure-requests; block-all-mixed-content"
     />
     <meta
       name="robots"
@@ -379,30 +379,21 @@
                 min="0"
                 step="0.0001"
                 class="campo-valor-9usd-eur"
-                placeholder="Cargar valor convertido"
+                placeholder="Carga automática o manual"
               />
             </div>
 
             <div class="campo">
               <label>Conversor</label>
               <div class="bloque-conversor-monedas">
-                <button
-                  type="button"
-                  class="boton-secundario-pequeno btn-cargar-conversion-eur"
-                >
-                  OBTENER 9 USD EN EUR
-                </button>
-                <div class="texto-conversion-eur">
-                  Consultar cotización actual para completar el valor.
-                </div>
-                <a
-                  href="https://themoneyconverter.com/ES/CurrencyConverter.aspx?tab=0&amp;from=USD&amp;to=EUR&amp;bg=ffffff&amp;logo=https://aduana.sunnyislesgroup.com/wp-content/uploads/2018/06/AA-240.png"
-                  target="_blank"
-                  rel="noopener noreferrer nofollow"
-                  class="enlace-boton-externo"
-                >
-                  ABRIR REFERENCIA
-                </a>
+                <iframe
+                  class="iframe-conversor-monedas"
+                  src="https://themoneyconverter.com/ES/CurrencyConverter.aspx?tab=0&amp;from=USD&amp;to=EUR&amp;bg=ffffff&amp;logo=https://aduana.sunnyislesgroup.com/wp-content/uploads/2018/06/AA-240.png"
+                  title="Conversor USD a EUR"
+                  loading="lazy"
+                  referrerpolicy="no-referrer"
+                  scrolling="no"
+                ></iframe>
               </div>
             </div>
           </div>

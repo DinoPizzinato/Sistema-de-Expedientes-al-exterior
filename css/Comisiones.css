@@ -289,16 +289,14 @@ body {
 
 .bloque-conversor-monedas {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
   align-items: flex-start;
 }
 
-.texto-conversion-eur {
-  min-height: 34px;
-  font-size: 12px;
-  line-height: 1.4;
-  color: #44546a;
+.iframe-conversor-monedas {
+  width: min(100%, 251px);
+  height: 348px;
+  border: 0;
+  background: #ffffff;
 }
 
 .contenedor-acciones-funcionarios {

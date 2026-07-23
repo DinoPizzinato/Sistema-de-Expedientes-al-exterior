@@ -363,15 +363,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const boton = formulario.querySelector(".btn-cargar-conversion-eur");
     const estado = formulario.querySelector(".texto-conversion-eur");
 
-    if (!campo || !boton || !estado) return;
+    if (!campo) return;
     if (formulario.dataset.cargandoConversionEur === "1") return;
 
-    const textoOriginal = boton.dataset.textoOriginal || boton.textContent;
-    boton.dataset.textoOriginal = textoOriginal;
+    const textoOriginal = boton
+      ? boton.dataset.textoOriginal || boton.textContent
+      : "";
+    if (boton) {
+      boton.dataset.textoOriginal = textoOriginal;
+    }
     formulario.dataset.cargandoConversionEur = "1";
-    boton.disabled = true;
-    boton.textContent = "CARGANDO...";
-    estado.textContent = "Consultando cotización actual...";
+    if (boton) {
+      boton.disabled = true;
+      boton.textContent = "CARGANDO...";
+    }
+    if (estado) {
+      estado.textContent = "Consultando cotización actual...";
+    }
 
     try {
       const response = await fetch(FRANKFURTER_USD_EUR_URL, {
@@ -390,17 +398,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const valor9UsdEur = (rate * 9).toFixed(4);
       campo.value = valor9UsdEur;
-      estado.textContent = `Actualizado: 9 USD = ${valor9UsdEur} EUR (${formatearFechaCotizacion(data.date)})`;
+      if (estado) {
+        estado.textContent = `Actualizado: 9 USD = ${valor9UsdEur} EUR (${formatearFechaCotizacion(data.date)})`;
+      }
       formulario.dataset.conversionEurConsultada = "1";
       campo.dispatchEvent(new Event("input", { bubbles: true }));
     } catch (error) {
-      estado.textContent = manual
-        ? "No se pudo obtener la cotización. Puede cargar el valor manualmente."
-        : "No se pudo obtener la cotización automática. Puede cargar el valor manualmente.";
+      if (estado) {
+        estado.textContent = manual
+          ? "No se pudo obtener la cotización. Puede cargar el valor manualmente."
+          : "No se pudo obtener la cotización automática. Puede cargar el valor manualmente.";
+      }
     } finally {
       delete formulario.dataset.cargandoConversionEur;
-      boton.disabled = false;
-      boton.textContent = textoOriginal;
+      if (boton) {
+        boton.disabled = false;
+        boton.textContent = textoOriginal;
+      }
     }
   }
 
@@ -1256,12 +1270,13 @@ document.addEventListener("DOMContentLoaded", () => {
         actualizarTotalesGenerales();
       });
 
-    formulario
-      .querySelector(".btn-cargar-conversion-eur")
-      .addEventListener("click", () => {
+    const botonConversion = formulario.querySelector(".btn-cargar-conversion-eur");
+    if (botonConversion) {
+      botonConversion.addEventListener("click", () => {
         formulario.dataset.conversionEurConsultada = "1";
         cargarValor9UsdEur(formulario, { manual: true });
       });
+    }
 
     [
       ".campo-fecha-inicio",
