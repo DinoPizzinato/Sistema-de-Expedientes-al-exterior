@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none'; manifest-src 'self'; media-src 'self'; worker-src 'self' blob:; upgrade-insecure-requests; block-all-mixed-content"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://api.frankfurter.dev; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none'; manifest-src 'self'; media-src 'self'; worker-src 'self' blob:; upgrade-insecure-requests; block-all-mixed-content"
     />
     <meta
       name="robots"
@@ -258,6 +258,18 @@
           </div>
         </div>
 
+        <div class="fila fila-dos">
+          <div class="campo">
+            <label>Horario de abordaje al inicio</label>
+            <input type="time" class="campo-hora-abordaje-inicio" />
+          </div>
+
+          <div class="campo">
+            <label>Horario de abordaje al finalizar</label>
+            <input type="time" class="campo-hora-abordaje-fin" />
+          </div>
+        </div>
+
         <div class="bloque-ubicaciones">
           <div class="contenedor-ubicaciones"></div>
 
@@ -373,14 +385,25 @@
 
             <div class="campo">
               <label>Conversor</label>
-              <a
-                href="https://www.aduanaargentina.com/conversor-de-monedas/"
-                target="_blank"
-                rel="noopener noreferrer nofollow"
-                class="enlace-boton-externo"
-              >
-                ABRIR CONVERSOR
-              </a>
+              <div class="bloque-conversor-monedas">
+                <button
+                  type="button"
+                  class="boton-secundario-pequeno btn-cargar-conversion-eur"
+                >
+                  OBTENER 9 USD EN EUR
+                </button>
+                <div class="texto-conversion-eur">
+                  Consultar cotización actual para completar el valor.
+                </div>
+                <a
+                  href="https://themoneyconverter.com/ES/CurrencyConverter.aspx?tab=0&amp;from=USD&amp;to=EUR&amp;bg=ffffff&amp;logo=https://aduana.sunnyislesgroup.com/wp-content/uploads/2018/06/AA-240.png"
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
+                  class="enlace-boton-externo"
+                >
+                  ABRIR REFERENCIA
+                </a>
+              </div>
             </div>
           </div>
 

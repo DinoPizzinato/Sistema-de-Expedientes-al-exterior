@@ -207,6 +207,8 @@ document.addEventListener("DOMContentLoaded", () => {
     return Number(value || 0);
   }
 
+  const FRANKFURTER_USD_EUR_URL = "https://api.frankfurter.dev/v2/rate/USD/EUR";
+
   function agregarTotalPorMoneda(totales, moneda, valor) {
     const amount = toNumber(valor);
     const currency = String(moneda || "").trim().toUpperCase() || "USD";
@@ -346,6 +348,60 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/\s+/g, " ")
       .trim()
       .toLowerCase();
+  }
+
+  function formatearFechaCotizacion(fechaIso) {
+    if (!fechaIso) return "";
+
+    const [anio, mes, dia] = String(fechaIso).split("-");
+    if (!anio || !mes || !dia) return String(fechaIso);
+    return `${dia}/${mes}/${anio}`;
+  }
+
+  async function cargarValor9UsdEur(formulario, { manual = false } = {}) {
+    const campo = formulario.querySelector(".campo-valor-9usd-eur");
+    const boton = formulario.querySelector(".btn-cargar-conversion-eur");
+    const estado = formulario.querySelector(".texto-conversion-eur");
+
+    if (!campo || !boton || !estado) return;
+    if (formulario.dataset.cargandoConversionEur === "1") return;
+
+    const textoOriginal = boton.dataset.textoOriginal || boton.textContent;
+    boton.dataset.textoOriginal = textoOriginal;
+    formulario.dataset.cargandoConversionEur = "1";
+    boton.disabled = true;
+    boton.textContent = "CARGANDO...";
+    estado.textContent = "Consultando cotización actual...";
+
+    try {
+      const response = await fetch(FRANKFURTER_USD_EUR_URL, {
+        headers: { Accept: "application/json" },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const data = await response.json();
+      const rate = Number(data.rate || 0);
+      if (!(rate > 0)) {
+        throw new Error("La cotización recibida no es válida.");
+      }
+
+      const valor9UsdEur = (rate * 9).toFixed(4);
+      campo.value = valor9UsdEur;
+      estado.textContent = `Actualizado: 9 USD = ${valor9UsdEur} EUR (${formatearFechaCotizacion(data.date)})`;
+      formulario.dataset.conversionEurConsultada = "1";
+      campo.dispatchEvent(new Event("input", { bubbles: true }));
+    } catch (error) {
+      estado.textContent = manual
+        ? "No se pudo obtener la cotización. Puede cargar el valor manualmente."
+        : "No se pudo obtener la cotización automática. Puede cargar el valor manualmente.";
+    } finally {
+      delete formulario.dataset.cargandoConversionEur;
+      boton.disabled = false;
+      boton.textContent = textoOriginal;
+    }
   }
 
   function obtenerZonaPorPais(pais) {
@@ -628,11 +684,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
-  function copiarDatosCompartidos(
-    origen,
-    destino,
-    formularioBaseFechasHoras = origen,
-  ) {
+  function copiarDatosCompartidos(origen, destino) {
     if (!origen || !destino) return;
 
     const ubicaciones = obtenerUbicacionesFormulario(origen).filter(
@@ -642,21 +694,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const gastosOrigen = obtenerValoresMultiselect(
       origen.querySelector('.multiselect[data-nombre="gastos"]'),
     );
-    const valorConversionOrigen =
-      origen.querySelector(".campo-valor-9usd-eur")?.value || "";
-    const montoPasajesOrigen =
-      origen.querySelector(
-        '.monto-gasto-item[data-gasto="Pasajes"] .campo-monto-manual',
-      )?.value || "";
+    const transporteOrigen = obtenerValoresMultiselect(
+      origen.querySelector('.multiselect[data-nombre="transporte"]'),
+    );
 
     [
       ".campo-fecha-inicio",
       ".campo-fecha-fin",
       ".campo-hora-salida",
       ".campo-hora-llegada",
+      ".campo-hora-abordaje-inicio",
+      ".campo-hora-abordaje-fin",
     ].forEach((selector) => {
       destino.querySelector(selector).value =
-        formularioBaseFechasHoras.querySelector(selector).value;
+        origen.querySelector(selector).value;
     });
 
     contenedorUbicaciones.innerHTML = "";
@@ -665,23 +716,25 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     actualizarEstadoEliminarUbicacion(destino);
 
-    destino.querySelector(".campo-valor-9usd-eur").value = valorConversionOrigen;
     destino
       .querySelectorAll('.multiselect[data-nombre="gastos"] input[type="checkbox"]')
       .forEach((checkbox) => {
         checkbox.checked = gastosOrigen.includes(checkbox.value);
       });
+    destino
+      .querySelectorAll(
+        '.multiselect[data-nombre="transporte"] input[type="checkbox"]',
+      )
+      .forEach((checkbox) => {
+        checkbox.checked = transporteOrigen.includes(checkbox.value);
+      });
     actualizarTextoMultiselect(
       destino.querySelector('.multiselect[data-nombre="gastos"]'),
     );
-    recalcularBloqueMontos(destino);
-
-    const campoPasajesDestino = destino.querySelector(
-      '.monto-gasto-item[data-gasto="Pasajes"] .campo-monto-manual',
+    actualizarTextoMultiselect(
+      destino.querySelector('.multiselect[data-nombre="transporte"]'),
     );
-    if (campoPasajesDestino) {
-      campoPasajesDestino.value = montoPasajesOrigen;
-    }
+    recalcularBloqueMontos(destino);
 
     actualizarDuracion(destino);
     actualizarLiquidacionAutomatica(destino);
@@ -764,10 +817,24 @@ document.addEventListener("DOMContentLoaded", () => {
     return total;
   }
 
+  function tieneTransporteSeleccionado(formulario) {
+    return Boolean(
+      formulario.querySelector(
+        '.multiselect[data-nombre="transporte"] input[type="checkbox"]:checked',
+      ),
+    );
+  }
+
   function calcularNochesAlojamiento(formulario) {
     const inicio = formulario.querySelector(".campo-fecha-inicio").value;
     const fin = formulario.querySelector(".campo-fecha-fin").value;
     const hsLlegada = formulario.querySelector(".campo-hora-llegada").value;
+    const hsAbordajeInicio = formulario.querySelector(
+      ".campo-hora-abordaje-inicio",
+    ).value;
+    const hsAbordajeFin = formulario.querySelector(
+      ".campo-hora-abordaje-fin",
+    ).value;
 
     if (!inicio || !fin || !hsLlegada) return 0;
 
@@ -777,7 +844,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let noches = Math.floor((d2 - d1) / 86400000);
 
-    if (hsLlegada < "06:00") {
+    if (tieneTransporteSeleccionado(formulario) && hsAbordajeInicio) {
+      noches -= 1;
+    }
+
+    if (tieneTransporteSeleccionado(formulario) && hsAbordajeFin) {
+      noches -= 1;
+    } else if (hsLlegada < "06:00") {
       noches -= 1;
     }
 
@@ -914,6 +987,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const campoTA = formulario.querySelector(".campo-total-alojamiento");
     const campoTC = formulario.querySelector(".campo-total-cobertura");
     const campoTG = formulario.querySelector(".campo-total-gastos");
+    const campoValorConversion = formulario.querySelector(
+      ".campo-valor-9usd-eur",
+    );
+    const estadoConversion = formulario.querySelector(".texto-conversion-eur");
 
     if (!pais || !zona || !grupo || diasCobertura <= 0) {
       bloque.classList.add("oculto");
@@ -987,6 +1064,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (gastos.includes("Cobertura médica") && diasCobertura > 0) {
       if (zona === 3) {
         filaConversion.classList.remove("oculto");
+        if (
+          campoValorConversion &&
+          !campoValorConversion.value.trim() &&
+          formulario.dataset.conversionEurConsultada !== "1"
+        ) {
+          formulario.dataset.conversionEurConsultada = "1";
+          cargarValor9UsdEur(formulario);
+        }
         if (valor9UsdEur > 0) {
           cobertura = valor9UsdEur * diasCobertura;
           if (itemCobertura) {
@@ -1012,6 +1097,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     } else {
       filaConversion.classList.add("oculto");
+      if (estadoConversion) {
+        estadoConversion.textContent =
+          "Consultar cotización actual para completar el valor.";
+      }
     }
 
     if (itemPasajes) {
@@ -1064,9 +1153,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!bloquesTransporte.length) return;
 
     const bloquePrincipal = bloquesTransporte[0];
-    const filaHorarios = formulario
-      .querySelector(".campo-hora-salida")
-      ?.closest(".fila");
+    const filaHorarios =
+      formulario.querySelector(".campo-hora-abordaje-fin")?.closest(".fila") ||
+      formulario.querySelector(".campo-hora-salida")?.closest(".fila");
 
     if (filaHorarios && filaHorarios.nextElementSibling !== bloquePrincipal) {
       filaHorarios.insertAdjacentElement("afterend", bloquePrincipal);
@@ -1167,11 +1256,20 @@ document.addEventListener("DOMContentLoaded", () => {
         actualizarTotalesGenerales();
       });
 
+    formulario
+      .querySelector(".btn-cargar-conversion-eur")
+      .addEventListener("click", () => {
+        formulario.dataset.conversionEurConsultada = "1";
+        cargarValor9UsdEur(formulario, { manual: true });
+      });
+
     [
       ".campo-fecha-inicio",
       ".campo-fecha-fin",
       ".campo-hora-salida",
       ".campo-hora-llegada",
+      ".campo-hora-abordaje-inicio",
+      ".campo-hora-abordaje-fin",
       ".campo-valor-9usd-eur",
     ].forEach((selector) => {
       formulario.querySelector(selector).addEventListener("input", () => {
@@ -1188,20 +1286,14 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function crearFormularioFuncionario() {
-    const formularioBaseFechasHoras =
+    const formularioBaseCompartido =
       contenedorFuncionarios.querySelector(".bloque-funcionario");
-    const formularioReferencia =
-      contenedorFuncionarios.querySelector(".bloque-funcionario:last-of-type");
     const clone = templateFuncionario.content.cloneNode(true);
     const formulario = clone.querySelector(".bloque-funcionario");
     formulario.dataset.funcionarioId = `funcionario-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
 
     inicializarFormulario(formulario);
-    copiarDatosCompartidos(
-      formularioReferencia,
-      formulario,
-      formularioBaseFechasHoras,
-    );
+    copiarDatosCompartidos(formularioBaseCompartido, formulario);
     contenedorFuncionarios.appendChild(formulario);
     renumerarFuncionarios();
     actualizarTotalesGenerales();
@@ -1268,6 +1360,9 @@ document.addEventListener("DOMContentLoaded", () => {
       fechaFin: formulario.querySelector(".campo-fecha-fin").value,
       horaSalida: formulario.querySelector(".campo-hora-salida").value,
       horaLlegada: formulario.querySelector(".campo-hora-llegada").value,
+      horaAbordajeInicio: formulario.querySelector(".campo-hora-abordaje-inicio")
+        .value,
+      horaAbordajeFin: formulario.querySelector(".campo-hora-abordaje-fin").value,
       ubicaciones: obtenerUbicacionesFormulario(formulario),
       duracionTotal: formulario.querySelector(".campo-duracion").value,
       diasComputables: obtenerDiasComputables(formulario),

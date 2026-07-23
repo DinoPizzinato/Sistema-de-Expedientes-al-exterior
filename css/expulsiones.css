@@ -365,6 +365,20 @@ body {
   font-size: 12px;
 }
 
+.bloque-conversor-monedas {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.texto-conversion-eur {
+  min-height: 34px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #44546a;
+}
+
 .contenedor-acciones-funcionarios {
   display: flex;
   justify-content: center;
