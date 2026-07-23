@@ -29,6 +29,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const totalAlojamiento = document.getElementById("total-alojamiento");
   const totalCobertura = document.getElementById("total-cobertura");
   const totalGeneral = document.getElementById("total-general");
+  const pasajeFuncionarioIndividual = document.getElementById(
+    "pasaje-funcionario-individual",
+  );
+  const pasajeFuncionarioTotal = document.getElementById(
+    "pasaje-funcionario-total",
+  );
+  const pasajeDetenido = document.getElementById("pasaje-detenido");
   const modalAviso = document.getElementById("modal-aviso");
   const modalAvisoTitulo = document.getElementById("modal-aviso-titulo");
   const modalAvisoMensaje = document.getElementById("modal-aviso-mensaje");
@@ -337,7 +344,55 @@ document.addEventListener("DOMContentLoaded", () => {
       );
     });
 
+    const datosPasajes = obtenerDatosPasajesExtradicion();
+    agregarTotalPorMoneda(
+      resumen.pasajes,
+      datosPasajes.moneda,
+      datosPasajes.pasajeDetenido,
+    );
+    agregarTotalPorMoneda(
+      resumen.general,
+      datosPasajes.moneda,
+      datosPasajes.pasajeDetenido,
+    );
+
     return resumen;
+  }
+
+  function obtenerMonedaPasajesExtradicion() {
+    return (
+      Array.from(document.querySelectorAll(".bloque-funcionario .campo-moneda"))
+        .map((campo) => campo.value.trim().toUpperCase())
+        .find(Boolean) || "USD"
+    );
+  }
+
+  function obtenerDatosPasajesExtradicion() {
+    const cantidadFuncionarios =
+      document.querySelectorAll(".bloque-funcionario").length;
+    const individual = toNumber(pasajeFuncionarioIndividual?.value);
+    const detenido = toNumber(pasajeDetenido?.value);
+
+    return {
+      moneda: obtenerMonedaPasajesExtradicion(),
+      cantidadFuncionarios,
+      pasajeFuncionarioIndividual: individual,
+      totalPasajesFuncionarios: individual * cantidadFuncionarios,
+      pasajeDetenido: detenido,
+      totalPasajes: individual * cantidadFuncionarios + detenido,
+    };
+  }
+
+  function actualizarCamposPasajesExtradicion() {
+    if (!pasajeFuncionarioTotal) return;
+
+    const datosPasajes = obtenerDatosPasajesExtradicion();
+    pasajeFuncionarioTotal.value = datosPasajes.totalPasajesFuncionarios
+      ? formatMoney(
+          datosPasajes.totalPasajesFuncionarios,
+          datosPasajes.moneda,
+        )
+      : "";
   }
 
   function normalizarTexto(value) {
@@ -1005,6 +1060,8 @@ document.addEventListener("DOMContentLoaded", () => {
       ".campo-valor-9usd-eur",
     );
     const estadoConversion = formulario.querySelector(".texto-conversion-eur");
+    const datosPasajes = obtenerDatosPasajesExtradicion();
+    const pasajes = datosPasajes.pasajeFuncionarioIndividual;
 
     if (!pais || !zona || !grupo || diasCobertura <= 0) {
       bloque.classList.add("oculto");
@@ -1018,7 +1075,7 @@ document.addEventListener("DOMContentLoaded", () => {
       campoTA.value = "";
       campoTC.value = "";
       campoTG.value = "";
-      formulario.dataset.totalPasajes = 0;
+      formulario.dataset.totalPasajes = pasajes;
       formulario.dataset.totalViaticos = 0;
       formulario.dataset.totalAlojamiento = 0;
       formulario.dataset.totalCobertura = 0;
@@ -1040,7 +1097,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let viaticos = 0;
     let alojamiento = 0;
     let cobertura = 0;
-    let pasajes = 0;
 
     const itemViaticos = formulario.querySelector(
       '.monto-gasto-item[data-gasto="Viáticos"]',
@@ -1051,10 +1107,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const itemCobertura = formulario.querySelector(
       '.monto-gasto-item[data-gasto="Cobertura médica"]',
     );
-    const itemPasajes = formulario.querySelector(
-      '.monto-gasto-item[data-gasto="Pasajes"]',
-    );
-
     if (gastos.includes("Viáticos") && diasComputables > 0) {
       viaticos = tarifa.viaticos * diasComputables;
       if (itemViaticos) {
@@ -1117,12 +1169,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    if (itemPasajes) {
-      pasajes = toNumber(
-        itemPasajes.querySelector(".campo-monto-manual").value,
-      );
-    }
-
     const totalVisible = pasajes + viaticos + alojamiento + cobertura;
 
     campoTV.value = viaticos ? formatMoney(viaticos, moneda) : "";
@@ -1141,6 +1187,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function actualizarTotalesGenerales() {
+    actualizarCamposPasajesExtradicion();
+
     const resumen = obtenerResumenTotalesGenerales();
     const hayPasajes = tieneTotales(resumen.pasajes);
     const hayTotales = tieneTotales(resumen.general);
@@ -1370,7 +1418,7 @@ document.addEventListener("DOMContentLoaded", () => {
       apellido: formulario.querySelector(".campo-apellido").value.trim(),
       siglas: formulario.querySelector(".campo-siglas").value.trim(),
       destino: formulario.querySelector(".campo-destino").value.trim(),
-      motivoComision: "Expulsión",
+      motivoComision: "Extradición",
       fechaInicio: formulario.querySelector(".campo-fecha-inicio").value,
       fechaFin: formulario.querySelector(".campo-fecha-fin").value,
       horaSalida: formulario.querySelector(".campo-hora-salida").value,
@@ -1400,7 +1448,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function recolectarDatosJudiciales() {
     return {
-      motivoComision: "Expulsión",
+      motivoComision: "Extradición",
       numeroInternoExpediente: document
         .getElementById("numero-interno-expediente")
         .value.trim(),
@@ -1437,11 +1485,28 @@ document.addEventListener("DOMContentLoaded", () => {
     eliminarFuncionarioSeleccionado,
   );
 
+  [pasajeFuncionarioIndividual, pasajeDetenido]
+    .filter(Boolean)
+    .forEach((campo) => {
+      campo.addEventListener("input", () => {
+        document
+          .querySelectorAll(".bloque-funcionario")
+          .forEach((formulario) => actualizarLiquidacionAutomatica(formulario));
+        actualizarTotalesGenerales();
+      });
+    });
+
   btnGenerarWord.addEventListener("click", () => {
+    const datosPasajes = obtenerDatosPasajesExtradicion();
     const datos = {
       datosJudiciales: recolectarDatosJudiciales(),
       funcionarios: recolectarDatos(),
       resumen: obtenerResumenTotalesGenerales(),
+      monedaPasajes: datosPasajes.moneda,
+      pasajeFuncionarioIndividual: datosPasajes.pasajeFuncionarioIndividual,
+      totalPasajesFuncionarios: datosPasajes.totalPasajesFuncionarios,
+      pasajeDetenido: datosPasajes.pasajeDetenido,
+      totalPasajesExtradicion: datosPasajes.totalPasajes,
     };
 
     localStorage.setItem("datosExtradiciones", JSON.stringify(datos));

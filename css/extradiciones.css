@@ -370,6 +370,23 @@ body {
   align-items: flex-start;
 }
 
+.bloque-conversor-referencia {
+  border: 1px solid #d4dbe5;
+  background-color: #ffffff;
+  padding: 12px;
+}
+
+.bloque-conversor-monedas-centrado {
+  justify-content: center;
+}
+
+.texto-ayuda-conversor {
+  margin-bottom: 12px;
+  color: #516178;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
 .iframe-conversor-monedas {
   width: min(100%, 251px);
   height: 348px;

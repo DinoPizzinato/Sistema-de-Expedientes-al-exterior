@@ -1249,6 +1249,41 @@
     return totals;
   }
 
+  function hasCurrencyTotals(totales) {
+    return Object.values(totales || {}).some((monto) => safeNumber(monto) > 0);
+  }
+
+  function normalizeCurrencyTotals(totales) {
+    const normalizados = {};
+
+    Object.entries(totales || {}).forEach(([moneda, monto]) => {
+      agregarMontoPorMoneda(normalizados, moneda, monto);
+    });
+
+    return normalizados;
+  }
+
+  function resolveSummaryTotals(data, funcionarios) {
+    const fallback = buildTotalsByCurrency(funcionarios);
+    const resumen = data?.resumen || {};
+
+    const pasajes = normalizeCurrencyTotals(resumen.pasajes);
+    const viaticos = normalizeCurrencyTotals(resumen.viaticos);
+    const alojamiento = normalizeCurrencyTotals(resumen.alojamiento);
+    const cobertura = normalizeCurrencyTotals(resumen.cobertura);
+    const general = normalizeCurrencyTotals(resumen.general);
+
+    return {
+      pasajes: hasCurrencyTotals(pasajes) ? pasajes : fallback.pasajes,
+      viaticos: hasCurrencyTotals(viaticos) ? viaticos : fallback.viaticos,
+      alojamiento: hasCurrencyTotals(alojamiento)
+        ? alojamiento
+        : fallback.alojamiento,
+      cobertura: hasCurrencyTotals(cobertura) ? cobertura : fallback.cobertura,
+      general: hasCurrencyTotals(general) ? general : fallback.general,
+    };
+  }
+
   function formatCurrencyTotalsShort(totales, emptyText = "NO EROGA.") {
     const partes = Object.entries(totales)
       .filter(([, monto]) => safeNumber(monto) > 0)
@@ -1377,6 +1412,39 @@
       totales.pasajes,
       "NO APLICA - A/C DIRECCIÓN NACIONAL DE MIGRACIONES (DNM).",
     );
+  }
+
+  function buildPasajeDetenidoLine(data, funcionarios) {
+    const total = safeNumber(data?.pasajeDetenido);
+    if (total <= 0) return "";
+
+    const moneda =
+      data?.monedaPasajes ||
+      funcionarios.find((funcionario) => normalizeSpaces(funcionario.moneda))
+        ?.moneda ||
+      "USD";
+
+    return `Para pasaje del detenido: eroga un total de ${amountToWords(
+      total,
+      moneda,
+    )}.`;
+  }
+
+  function buildMontoTransporteText(data, funcionarios, totales) {
+    const lineas = funcionarios.map(buildPasajesLine).filter(Boolean);
+    const lineaDetenido = buildPasajeDetenidoLine(data, funcionarios);
+
+    if (lineaDetenido) {
+      lineas.push(lineaDetenido);
+    }
+
+    if (!lineas.length || !hasCurrencyTotals(totales.pasajes)) {
+      return "NO APLICA - A/C DIRECCION NACIONAL DE MIGRACIONES (DNM).";
+    }
+
+    return `${lineas.join(" ")} Total general: ${formatCurrencyTotalsWords(
+      totales.pasajes,
+    )}.`;
   }
 
   function buildFuncionariosDestinoTexto(count, capitalized = false) {
@@ -1544,6 +1612,26 @@
     };
   }
 
+  function buildSummaryTexts(data, funcionarios) {
+    const totals = resolveSummaryTotals(data, funcionarios);
+
+    return {
+      totalViaticosCorto: formatCurrencyTotalsShort(totals.viaticos),
+      totalAlojamientoCorto: formatCurrencyTotalsShort(totals.alojamiento),
+      totalCoberturaCorto: formatCurrencyTotalsShort(totals.cobertura),
+      montoTransporteTexto: buildMontoTransporteText(data, funcionarios, totals),
+      detalleViaticosTexto: buildViaticosResumenModelo(funcionarios, totals),
+      detalleAlojamientoTexto: buildAlojamientoResumenModelo(
+        funcionarios,
+        totals,
+      ),
+      detalleCoberturaTexto: buildCoberturaResumenModelo(funcionarios, totals),
+      costoTotalTexto: hasCurrencyTotals(totals.general)
+        ? `${formatCurrencyTotalsWords(totals.general)}.`
+        : "NO EROGA.",
+    };
+  }
+
   function validateData(data) {
     const errors = [];
     const datosJudiciales = data.datosJudiciales || {};
@@ -1680,7 +1768,7 @@
     const nacionalidad = normalizeSpaces(datosJudiciales.nacionalidadDetenido);
     const grupoZona = buildGrupoZonaDescription(funcionarios);
     const dependenciasClause = buildDependenciasClause(funcionarios);
-    const summaryTexts = buildSummaryTexts(funcionarios);
+    const summaryTexts = buildSummaryTexts(data, funcionarios);
 
     return {
       expediente_electronico: normalizeSpaces(
